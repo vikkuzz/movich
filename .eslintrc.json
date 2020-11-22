@@ -12,6 +12,7 @@
       "jest": true
     },
     "rules": {
+       
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "curly": ["error"],
       "max-depth": ["warn", 4],
