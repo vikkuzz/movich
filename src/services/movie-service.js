@@ -11,16 +11,12 @@ export default class MovieService {
     return result;
   }
 
-  getAllMovie(req) {
-    return this.getResource(req);
-  }
+  async gettitle() {
+    const title = await this.getResource('return').then((res) => {
+      const arrMov = [...res.results];
+      return arrMov[0].title;
+    });
 
-  getTitle(req, id) {
-    const title = this.getAllMovie(req).then((body) => body.results[id].title);
     return title;
   }
 }
-
-const movie = new MovieService();
-movie.getAllMovie('super').then((body) => body.results[0].overview);
-movie.getTitle('super', 0);
