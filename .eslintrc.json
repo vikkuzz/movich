@@ -12,6 +12,8 @@
       "jest": true
     },
     "rules": {
+      "react/prop-types": 0,
+      "camelcase": 0,
       "spaced-comment": [1],
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "curly": ["error"],

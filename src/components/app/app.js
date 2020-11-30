@@ -1,56 +1,47 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Menu, Input } from 'antd';
+import { Layout, Menu, Input, Spin, Alert } from 'antd';
 import MovieService from '../../services';
+import Card from '../card';
 
 export default class App extends Component {
   state = {
     movieList: [],
+    load: true,
+    error: false,
+  };
+
+  onError = () => {
+    this.setState({
+      error: true,
+      load: true,
+    });
   };
 
   render() {
     const { Header, Content, Footer } = Layout;
     const movies = new MovieService();
-    const { movieList } = this.state;
+    const { movieList, load, error } = this.state;
 
-    movies.getResource('return').then((res) => {
-      this.setState(() => {
-        return {
-          movieList: res.results,
-        };
-      });
-    });
+    const errorMessage = error ? <Alert message="Что-то нае...кхм...пошло не по плану!" type="success" /> : null;
+    const spinner = load ? <Spin /> : null;
+
+    movies
+      .getResource('return')
+      .then((res) => {
+        this.setState(() => {
+          return {
+            movieList: res.results,
+            load: false,
+          };
+        });
+      })
+      .catch(this.onError);
+
     const elem = movieList.map((item) => {
-      const { id } = item;
-      return (
-        <div key={id} style={{ width: 454, display: 'flex', margin: 17, background: 'white' }}>
-          <div style={{ width: '40%' }}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt={item.title}
-              style={{ width: '100%' }}
-            />
-          </div>
-          <div
-            style={{
-              width: '60%',
-              paddingTop: 12,
-              paddingLeft: 20,
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-            }}
-          >
-            <span>{item.title}</span>
-            <span>{item.release_date}</span>
-            <div>
-              <span>Action</span>
-              <span>Drama</span>
-            </div>
-            <span style={{ maxHeight: '11rem', overflow: 'hidden' }}>{item.overview}</span>
-          </div>
-        </div>
-      );
+      const { id, ...itemProps } = item;
+
+      return <Card key={id} {...itemProps} />;
     });
 
     return (
@@ -84,7 +75,8 @@ export default class App extends Component {
           }}
         >
           <Input placeholder="Что искать?" />
-
+          {spinner}
+          {errorMessage}
           {elem}
         </Content>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
