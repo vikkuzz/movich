@@ -49,10 +49,12 @@ export default class App extends Component {
 
   onInput = (evt) => {
     const newQuery = evt.target.value;
-    this.setState({
-      query: newQuery,
-    });
-    this.getMovies();
+    if (newQuery.length !== 0) {
+      this.setState({
+        query: newQuery,
+      });
+    }
+    this.getMovies(this.state.query);
     this.getTotal();
   };
 
