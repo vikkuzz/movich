@@ -1,15 +1,44 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Menu, Input, Spin, Alert } from 'antd';
+import { Layout, Menu, Input, Spin, Alert, Pagination } from 'antd';
+import { debounce } from 'lodash';
 import MovieService from '../../services';
 import Card from '../card';
 
 export default class App extends Component {
+  movies = new MovieService();
+
   state = {
     movieList: [],
+    query: 'return',
     load: true,
     error: false,
+    total: 0,
+    current: 1,
   };
+
+  constructor() {
+    super();
+    this.getMovies(this.state.query);
+    this.getTotal();
+  }
+
+  getMovies = (query, page = 1) => {
+    this.movies.getResource(query, page).then((result) => {
+      this.setState({
+        movieList: result,
+        load: false,
+      });
+    });
+  };
+
+  getTotal() {
+    this.movies.getTotal(this.state.query).then((result) => {
+      this.setState({
+        total: result,
+      });
+    });
+  }
 
   onError = () => {
     this.setState({
@@ -18,25 +47,30 @@ export default class App extends Component {
     });
   };
 
+  onInput = (evt) => {
+    const newQuery = evt.target.value;
+    this.setState({
+      query: newQuery,
+    });
+    this.getMovies();
+    this.getTotal();
+  };
+
+  onChange = (page) => {
+    this.getMovies(this.state.query, page);
+
+    this.setState({
+      current: page,
+    });
+  };
+
   render() {
     const { Header, Content, Footer } = Layout;
-    const movies = new MovieService();
-    const { movieList, load, error } = this.state;
+
+    const { movieList, load, error, total, current } = this.state;
 
     const errorMessage = error ? <Alert message="Что-то нае...кхм...пошло не по плану!" type="success" /> : null;
     const spinner = load ? <Spin /> : null;
-
-    movies
-      .getResource('return')
-      .then((res) => {
-        this.setState(() => {
-          return {
-            movieList: res.results,
-            load: false,
-          };
-        });
-      })
-      .catch(this.onError);
 
     const elem = movieList.map((item) => {
       const { id, ...itemProps } = item;
@@ -74,10 +108,12 @@ export default class App extends Component {
             justifyContent: 'center',
           }}
         >
-          <Input placeholder="Что искать?" />
+          <Input placeholder="Что искать?" onChange={debounce(this.onInput, 500)} />
+
           {spinner}
           {errorMessage}
           {elem}
+          <Pagination defaultCurrent={1} current={current} total={total} onChange={this.onChange} />
         </Content>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
       </Layout>

@@ -12,13 +12,15 @@
       "jest": true
     },
     "rules": {
+      
+      "react/destructuring-assignment": [0, "always", { "ignoreClassFields": "boolean" }],
       "react/prop-types": 0,
       "camelcase": 0,
       "spaced-comment": [1],
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "curly": ["error"],
       "max-depth": ["warn", 4],
-      "id-length": ["warn", { "exceptions": ["i", "j"], "min": 2 }],
+      "id-length": ["warn", { "exceptions": ["i", "j"], "min": 1 }],
       "no-lonely-if": ["error"],
       "no-plusplus": ["error", {"allowForLoopAfterthoughts": true}],
       "no-restricted-syntax": "off",
