@@ -10,24 +10,41 @@ export default class App extends Component {
 
   state = {
     movieList: [],
+    sessionId: null,
     query: 'return',
     load: true,
     error: false,
     total: 0,
     current: 1,
+    search: true,
+    rated: false,
   };
 
-  constructor() {
-    super();
+  componentDidMount() {
+    this.startSession();
+
     this.getMovies(this.state.query);
     this.getTotal();
   }
 
-  getMovies = (query, page = 1) => {
+  getRated = () => {
+    this.movies.getRatedMovies().then((result) => {
+      console.log(result.results);
+      this.setState({
+        movieList: result.results,
+        search: false,
+        rated: true,
+      });
+    });
+  };
+
+  getMovies = (query = this.state.query, page = 1) => {
     this.movies.getResource(query, page).then((result) => {
       this.setState({
         movieList: result,
         load: false,
+        search: true,
+        rated: false,
       });
     });
   };
@@ -39,6 +56,14 @@ export default class App extends Component {
       });
     });
   }
+
+  startSession = () => {
+    this.movies.getToken().then((result) => {
+      this.setState({
+        sessionId: result.request_token,
+      });
+    });
+  };
 
   onError = () => {
     this.setState({
@@ -69,10 +94,20 @@ export default class App extends Component {
   render() {
     const { Header, Content, Footer } = Layout;
 
-    const { movieList, load, error, total, current } = this.state;
+    const { movieList, load, error, total, current, sessionId, search, rated } = this.state;
+
+    console.log(this.state);
 
     const errorMessage = error ? <Alert message="Что-то нае...кхм...пошло не по плану!" type="success" /> : null;
     const spinner = load ? <Spin /> : null;
+
+    let view = 'block';
+    if (search) {
+      view = 'block';
+    }
+    if (rated) {
+      view = 'none';
+    }
 
     const elem = movieList.map((item) => {
       const { id, ...itemProps } = item;
@@ -94,9 +129,13 @@ export default class App extends Component {
             justifyContent: 'center',
           }}
         >
-          <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ height: 54, display: 'flex', maxWidth: 1200 }}>
-            <Menu.Item key="1">Поиск</Menu.Item>
-            <Menu.Item key="2">Рейтинг</Menu.Item>
+          <Menu mode="horizontal" defaultSelectedKeys={['1']} style={{ height: 54, display: 'flex', maxWidth: 1200 }}>
+            <Menu.Item key="1" onClick={this.getMovies}>
+              Поиск
+            </Menu.Item>
+            <Menu.Item key="2" onClick={this.getRated}>
+              Рейтинг
+            </Menu.Item>
           </Menu>
         </Header>
         <Content
@@ -110,9 +149,10 @@ export default class App extends Component {
             justifyContent: 'center',
           }}
         >
-          <Input placeholder="Что искать?" onChange={debounce(this.onInput, 500)} />
+          <Input placeholder="Что искать?" onChange={debounce(this.onInput, 500)} style={{ display: view }} />
 
           {spinner}
+          {sessionId}
           {errorMessage}
           {elem}
           <Pagination defaultCurrent={1} current={current} total={total} onChange={this.onChange} />
