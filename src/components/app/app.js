@@ -49,7 +49,6 @@ export default class App extends Component {
         rated: true,
       });
     });
-    console.log(this.state.movieList);
   };
 
   getMovies = (query = this.state.query, page = 1) => {
