@@ -3,12 +3,22 @@ import { Rate } from 'antd';
 import Rating from '../rating';
 import Genre from '../genre';
 import './card.css';
+import MovieService from '../../services';
 
 class Card extends Component {
-  state = {};
+  state = {
+    value: 0,
+  };
+
+  cards = new MovieService();
+
+  handleChange = (value) => {
+    this.setState({ value });
+  };
 
   render() {
     const { id, title, release_date, overview, poster_path, vote_average, genre_ids } = this.props;
+    const { value } = this.state;
 
     return (
       <div className="card" key={id} style={{ width: 454, margin: 17, background: 'white' }}>
@@ -35,7 +45,14 @@ class Card extends Component {
         </div>
         <div className="wrap-overview">
           <div className="overview">{overview}</div>
-          <Rate className="stars" count="10" allowHalf="true" />
+          <Rate
+            className="stars"
+            onChange={this.handleChange}
+            value={value}
+            count="10"
+            allowHalf="true"
+            defaultValue="0"
+          />
         </div>
       </div>
     );
