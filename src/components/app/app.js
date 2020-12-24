@@ -176,7 +176,9 @@ export default class App extends Component {
           {sessionId}
           {errorMessage}
           {elem}
-          <Pagination defaultCurrent={1} current={current} total={total} onChange={this.onChange} />
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Pagination defaultCurrent={1} current={current} total={total} onChange={this.onChange} />
+          </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
       </Layout>
