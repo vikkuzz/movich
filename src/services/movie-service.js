@@ -30,7 +30,7 @@ export default class MovieService {
     );
 
     const result = await res.json();
-    console.log(result);
+
     return result;
   }
 
@@ -51,7 +51,7 @@ export default class MovieService {
     );
 
     const result = await ratedMovies.json();
-    console.log(result);
+
     return result;
   }
 
@@ -71,7 +71,7 @@ export default class MovieService {
     const guestSession = await fetch(
       `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this.apiKey}`
     ).then((res) => res.json());
-    console.log(guestSession.guest_session_id);
+
     return guestSession.guest_session_id;
   }
 
