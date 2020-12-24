@@ -6,19 +6,24 @@ import './card.css';
 import MovieService from '../../services';
 
 class Card extends Component {
-  state = {
-    value: 0,
-  };
-
   cards = new MovieService();
 
+  state = {
+    stars: 0,
+  };
+
   handleChange = (value) => {
-    this.setState({ value });
+    this.setState({
+      stars: value,
+    });
+
+    this.props.sendRate(this.props.id, value, this.props.sessionId);
   };
 
   render() {
-    const { id, title, release_date, overview, poster_path, vote_average, genre_ids } = this.props;
-    const { value } = this.state;
+    const { id, title, release_date, overview, poster_path, vote_average, genre_ids, rating } = this.props;
+
+    const { stars } = this.state;
 
     return (
       <div className="card" key={id} style={{ width: 454, margin: 17, background: 'white' }}>
@@ -48,10 +53,10 @@ class Card extends Component {
           <Rate
             className="stars"
             onChange={this.handleChange}
-            value={value}
+            value={stars}
             count="10"
             allowHalf="true"
-            defaultValue="0"
+            defaultValue={rating}
           />
         </div>
       </div>

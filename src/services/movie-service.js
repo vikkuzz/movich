@@ -13,13 +13,13 @@ export default class MovieService {
     return result;
   }
 
-  async sendRate(id, stars) {
-    const session = await this.getSessionId();
+  async sendRate(id, stars, sessionId) {
+    // const session = await this.getSessionId();
     const body = {
       value: stars,
     };
     const res = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${session}`,
+      `https://api.themoviedb.org/3/movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${sessionId}`,
       {
         method: 'POST',
         headers: {
@@ -30,7 +30,7 @@ export default class MovieService {
     );
 
     const result = await res.json();
-
+    console.log(result);
     return result;
   }
 
@@ -45,15 +45,13 @@ export default class MovieService {
     return result.genres;
   }
 
-  async getRatedMovies() {
-    const session = await this.getSessionId();
-
+  async getRatedMovies(sessionId) {
     const ratedMovies = await fetch(
-      `https://api.themoviedb.org/3/guest_session/${session}/rated/movies?api_key=${this.apiKey}&language=en-US&sort_by=created_at.asc`
+      `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${this.apiKey}&language=en-US&sort_by=created_at.asc`
     );
 
     const result = await ratedMovies.json();
-
+    console.log(result);
     return result;
   }
 
@@ -73,7 +71,7 @@ export default class MovieService {
     const guestSession = await fetch(
       `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this.apiKey}`
     ).then((res) => res.json());
-
+    console.log(guestSession.guest_session_id);
     return guestSession.guest_session_id;
   }
 

@@ -1,3 +1,3 @@
 import { Provider, Consumer } from './context';
 
-export { Provider, Consumer };
+export default { Provider, Consumer };
