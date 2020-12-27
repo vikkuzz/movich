@@ -34,15 +34,28 @@ export default class MovieService {
     return result;
   }
 
-  async getGenres() {
-    const res = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this.apiKey}&language=en-US`);
+  async getGenres(array = []) {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=a7e5001cd9584cae4607d9bc812bcbd1&language=en-US`
+    );
 
     if (!res.ok) {
       throw new Error(`Cold not fetch, received ${res.status}`);
     }
     const result = await res.json();
 
-    return result.genres;
+    const genr = result.genres;
+
+    const names = [];
+
+    for (let i = 0; i < genr.length; i++) {
+      for (let j = 0; j < array.length; j++) {
+        if (array[j] === genr[i].id) {
+          names.push(genr[i].name);
+        }
+      }
+    }
+    return names;
   }
 
   async getRatedMovies(sessionId) {

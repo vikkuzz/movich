@@ -4,6 +4,7 @@ import { Layout, Menu, Input, Spin, Alert, Pagination } from 'antd';
 import { debounce } from 'lodash';
 import MovieService from '../../services';
 import Card from '../card';
+import { Provider } from '../context/context';
 
 export default class App extends Component {
   movies = new MovieService();
@@ -111,7 +112,7 @@ export default class App extends Component {
     const { movieList, load, error, total, current, sessionId, search, rated, genres } = this.state;
 
     const errorMessage = error ? <Alert message="Что-то нае...кхм...пошло не по плану!" type="success" /> : null;
-    const spinner = load ? <Spin /> : null;
+    const spinner = load ? <Spin size="large" /> : null;
 
     let view = 'block';
     if (search) {
@@ -159,27 +160,29 @@ export default class App extends Component {
             </Menu.Item>
           </Menu>
         </Header>
-        <Content
-          className="site-layout"
-          style={{
-            padding: '0 50px',
-            marginTop: 80,
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Input placeholder="Что искать?" onChange={debounce(this.onInput, 500)} style={{ display: view }} />
+        <Provider value={this.movies}>
+          <Content
+            className="site-layout"
+            style={{
+              padding: '0 50px',
+              marginTop: 80,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Input placeholder="Что искать?" onChange={debounce(this.onInput, 500)} style={{ display: view }} />
 
-          {spinner}
-          {sessionId}
-          {errorMessage}
-          {elem}
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Pagination defaultCurrent={1} current={current} total={total} onChange={this.onChange} />
-          </div>
-        </Content>
+            {spinner}
+            {sessionId}
+            {errorMessage}
+            {elem}
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <Pagination defaultCurrent={1} current={current} total={total} onChange={this.onChange} />
+            </div>
+          </Content>
+        </Provider>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
       </Layout>
     );

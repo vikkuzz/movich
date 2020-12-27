@@ -6,6 +6,10 @@ export default class Genre extends Component {
   render() {
     const { genres } = this.props;
 
-    return <>{genres}</>;
+    return (
+      <>
+        <div>{genres}</div>
+      </>
+    );
   }
 }
