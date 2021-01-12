@@ -16,8 +16,9 @@ class Card extends Component {
     await this.setState({
       stars: value,
     });
-
-    this.props.sendRate(this.props.id, this.state.stars, this.props.sessionId);
+    if (value > 0) {
+      this.props.sendRate(this.props.id, this.state.stars, this.props.sessionId);
+    }
   };
 
   render() {
