@@ -169,7 +169,14 @@ export default class App extends Component {
             {errorMessage}
             {elem}
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <Pagination defaultCurrent={1} current={current} total={total} onChange={this.onChange} />
+              <Pagination
+                defaultPageSize={20}
+                showSizeChanger={false}
+                defaultCurrent={1}
+                current={current}
+                total={total}
+                onChange={this.onChange}
+              />
             </div>
           </Content>
         </Provider>
