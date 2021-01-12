@@ -1,4 +1,4 @@
-https://movich-n3xban4jb.vercel.app/
+https://movich.vercel.app/
 
 ### Making a Progressive Web App
 
