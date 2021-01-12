@@ -14,7 +14,6 @@ export default class MovieService {
   }
 
   async sendRate(id, stars, sessionId) {
-    // const session = await this.getSessionId();
     const body = {
       value: stars,
     };
@@ -66,18 +65,6 @@ export default class MovieService {
     const result = await ratedMovies.json();
 
     return result;
-  }
-
-  async getToken() {
-    const token = await fetch(`https://api.themoviedb.org/3/authentication/token/new?api_key=${this.apiKey}`);
-    const result = await token.json();
-
-    return result.request_token;
-  }
-
-  async forwardUser() {
-    const newUrl = await this.getToken();
-    window.location.href = `https://www.themoviedb.org/authenticate/${newUrl}?redirect_to=http://localhost:3000/approved`;
   }
 
   async getSessionId() {

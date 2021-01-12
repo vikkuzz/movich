@@ -12,18 +12,18 @@ class Card extends Component {
     genres: [],
   };
 
-  handleChange = (value) => {
-    this.setState({
+  handleChange = async (value) => {
+    await this.setState({
       stars: value,
     });
 
-    this.props.sendRate(this.props.id, value, this.props.sessionId);
+    this.props.sendRate(this.props.id, this.state.stars, this.props.sessionId);
   };
 
   render() {
-    const { id, title, release_date, overview, poster_path, vote_average, genre_ids, rating } = this.props;
+    const { id, title, release_date, overview, poster_path, vote_average, genre_ids, personRate } = this.props;
 
-    const { stars, genres } = this.state;
+    const { genres } = this.state;
 
     return (
       <Consumer>
@@ -82,12 +82,11 @@ class Card extends Component {
               <div className="wrap-overview">
                 <div className="overview">{overview}</div>
                 <Rate
+                  defaultValue={personRate}
                   className="stars"
                   onChange={this.handleChange}
-                  value={stars}
                   count="10"
                   allowHalf="true"
-                  defaultValue={rating}
                 />
               </div>
             </div>

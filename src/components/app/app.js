@@ -24,7 +24,6 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    this.startSession();
     this.getGuestSession();
     this.getGenres();
     this.getMovies(this.state.query);
@@ -53,7 +52,7 @@ export default class App extends Component {
     });
   };
 
-  getMovies = (query = this.state.query, page = 1) => {
+  getMovies = (query = this.state.query, page = this.state.current) => {
     this.movies.getResource(query, page).then((result) => {
       this.setState({
         movieList: result.results,
@@ -69,14 +68,6 @@ export default class App extends Component {
     this.movies.getSessionId().then((result) => {
       this.setState({
         guestSessionId: result,
-      });
-    });
-  };
-
-  startSession = () => {
-    this.movies.getToken().then((result) => {
-      this.setState({
-        sessionId: result.request_token,
       });
     });
   };
@@ -98,12 +89,11 @@ export default class App extends Component {
     this.getMovies(this.state.query);
   };
 
-  onChange = (page) => {
-    this.getMovies(this.state.query, page);
-
-    this.setState({
+  onChange = async (page) => {
+    await this.setState({
       current: page,
     });
+    this.getMovies(this.state.query, page);
   };
 
   render() {
@@ -130,7 +120,7 @@ export default class App extends Component {
           key={item.id}
           {...itemProps}
           genres={genres}
-          value={item.rating}
+          personRate={item.rating || 0}
           sessionId={this.state.guestSessionId}
           sendRate={this.sendRate}
         />
