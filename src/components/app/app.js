@@ -11,7 +11,6 @@ export default class App extends Component {
 
   state = {
     movieList: [],
-    genres: [],
     sessionId: null,
     guestSessionId: null,
     query: 'return',
@@ -24,21 +23,19 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    this.getGuestSession();
-    this.getGenres();
+    if (!localStorage.movich) {
+      this.getGuestSession();
+    } else {
+      this.setState({
+        guestSessionId: JSON.parse(localStorage.movich),
+      });
+    }
+
     this.getMovies(this.state.query);
   }
 
   sendRate = (idFilm, stars, sessionId = this.state.guestSessionId) => {
     this.movies.sendRate(idFilm, stars, sessionId);
-  };
-
-  getGenres = () => {
-    this.movies.getGenres().then((result) => {
-      this.setState({
-        genres: result,
-      });
-    });
   };
 
   getRated = async (sessionId = this.state.guestSessionId) => {
@@ -64,12 +61,14 @@ export default class App extends Component {
     });
   };
 
-  getGuestSession = () => {
-    this.movies.getSessionId().then((result) => {
+  getGuestSession = async () => {
+    await this.movies.getSessionId().then((result) => {
       this.setState({
         guestSessionId: result,
       });
     });
+
+    localStorage.movich = JSON.stringify(this.state.guestSessionId);
   };
 
   onError = () => {
@@ -99,7 +98,7 @@ export default class App extends Component {
   render() {
     const { Header, Content, Footer } = Layout;
 
-    const { movieList, load, error, total, current, sessionId, search, rated, genres } = this.state;
+    const { movieList, load, error, total, current, sessionId, search, rated } = this.state;
 
     const errorMessage = error ? <Alert message="Что-то нае...кхм...пошло не по плану!" type="success" /> : null;
     const spinner = load ? <Spin size="large" /> : null;
@@ -119,8 +118,7 @@ export default class App extends Component {
         <Card
           key={item.id}
           {...itemProps}
-          genres={genres}
-          personRate={item.rating || 0}
+          personRate={item.rating}
           sessionId={this.state.guestSessionId}
           sendRate={this.sendRate}
         />

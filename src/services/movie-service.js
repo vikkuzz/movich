@@ -13,6 +13,8 @@ export default class MovieService {
     return result;
   }
 
+  address = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}`;
+
   async sendRate(id, stars, sessionId) {
     const body = {
       value: stars,
@@ -66,6 +68,20 @@ export default class MovieService {
     const result = await ratedMovies.json();
 
     return result;
+  }
+
+  async getRate(id, sessionId) {
+    let rate = null;
+    await this.getRatedMovies(sessionId).then((result) => {
+      rate = result.results.filter((item) => {
+        if (item.id === id) {
+          return item;
+        }
+        return null;
+      });
+    });
+
+    return rate;
   }
 
   async getSessionId() {
