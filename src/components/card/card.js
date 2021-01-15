@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
+
 import { Rate } from 'antd';
 import Rating from '../rating';
-// import Genre from '../genre';
-import './card.css';
-
+import Genre from '../genre';
 import { Consumer } from '../context/context';
+import './card.css';
 
 class Card extends Component {
   state = {
     stars: 0,
-    genres: [],
   };
 
   handleChange = async (value) => {
@@ -24,40 +23,10 @@ class Card extends Component {
   render() {
     const { id, title, release_date, overview, poster_path, vote_average, genre_ids, personRate } = this.props;
 
-    const { genres } = this.state;
-
     return (
       <Consumer>
         {({ getGenres }) => {
-          getGenres(genre_ids).then((result) => {
-            this.setState({
-              genres: result,
-            });
-          });
-
-          let idx = 999;
-
-          const elem = genres.map((item) => {
-            idx += 1;
-
-            return (
-              <div
-                key={idx}
-                style={{
-                  background: '#FAFAFA',
-                  border: '1px solid #D9D9D9',
-                  borderRadius: '2px',
-                  margin: '4px',
-                  fontWeight: 'normal',
-                  fontSize: '12px',
-                  lineHeight: '15px',
-                  color: 'rgba(0, 0, 0, 0.65)',
-                }}
-              >
-                {item}
-              </div>
-            );
-          });
+          const cardGenres = getGenres(genre_ids);
 
           return (
             <div className="card" key={id} style={{ width: 454, margin: 17, background: 'white' }}>
@@ -78,7 +47,9 @@ class Card extends Component {
                 </div>
                 <span style={{ fontSize: 12, color: '#827E7E' }}>{release_date}</span>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>{elem}</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  <Genre cardGenres={cardGenres} />
+                </div>
               </div>
               <div className="wrap-overview">
                 <div className="overview">{overview}</div>

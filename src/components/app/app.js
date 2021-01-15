@@ -41,8 +41,8 @@ export default class App extends Component {
     });
   };
 
-  getRated = (sessionId = this.state.guestSessionId) => {
-    this.movies.getRatedMovies(sessionId).then((result) => {
+  getRated = async (sessionId = this.state.guestSessionId) => {
+    await this.movies.getRatedMovies(sessionId).then((result) => {
       this.setState({
         movieList: result.results,
         total: result.total_results,

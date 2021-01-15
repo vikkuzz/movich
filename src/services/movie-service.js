@@ -54,6 +54,7 @@ export default class MovieService {
         }
       }
     }
+
     return names;
   }
 
