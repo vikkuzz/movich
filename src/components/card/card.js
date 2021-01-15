@@ -11,10 +11,6 @@ class Card extends Component {
     stars: 0,
   };
 
-  componentDidMount() {
-    this.handleChange(this.props.personRate);
-  }
-
   handleChange = async (value) => {
     await this.setState({
       stars: value,
