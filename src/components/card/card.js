@@ -21,7 +21,7 @@ class Card extends Component {
   };
 
   render() {
-    const { id, title, release_date, overview, poster_path, vote_average, genre_ids, personRate } = this.props;
+    const { id, title, release_date, overview, poster_path, vote_average, genre_ids, rating } = this.props;
 
     return (
       <Consumer>
@@ -54,7 +54,7 @@ class Card extends Component {
               <div className="wrap-overview">
                 <div className="overview">{overview}</div>
                 <Rate
-                  defaultValue={personRate}
+                  defaultValue={rating}
                   className="stars"
                   onChange={this.handleChange}
                   count="10"

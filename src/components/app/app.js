@@ -34,15 +34,22 @@ export default class App extends Component {
     this.getMovies(this.state.query);
   }
 
+  componentDidUpdate(prevState) {
+    if (this.state.movieList !== prevState.movieList) {
+      this.render();
+    }
+  }
+
   sendRate = (idFilm, stars, sessionId = this.state.guestSessionId) => {
     this.movies.sendRate(idFilm, stars, sessionId);
   };
 
-  getRated = async (sessionId = this.state.guestSessionId) => {
-    await this.movies.getRatedMovies(sessionId).then((result) => {
+  getRated = (sessionId = this.state.guestSessionId) => {
+    this.movies.getRatedMovies(sessionId).then((result) => {
       this.setState({
         movieList: result.results,
         total: result.total_results,
+        load: false,
         search: false,
         rated: true,
       });
@@ -102,6 +109,7 @@ export default class App extends Component {
 
     const errorMessage = error ? <Alert message="Что-то нае...кхм...пошло не по плану!" type="success" /> : null;
     const spinner = load ? <Spin size="large" /> : null;
+    let key = null;
 
     let view = 'block';
     if (search) {
@@ -114,15 +122,14 @@ export default class App extends Component {
     const elem = movieList.map((item) => {
       const { ...itemProps } = item;
 
-      return (
-        <Card
-          key={item.id}
-          {...itemProps}
-          personRate={item.rating}
-          sessionId={this.state.guestSessionId}
-          sendRate={this.sendRate}
-        />
-      );
+      if (rated) {
+        key = 999 + item.id;
+      }
+      if (search) {
+        key = item.id;
+      }
+
+      return <Card key={key} {...itemProps} sessionId={this.state.guestSessionId} sendRate={this.sendRate} />;
     });
 
     return (
