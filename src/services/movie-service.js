@@ -66,7 +66,7 @@ export default class MovieService {
     );
 
     const result = await ratedMovies.json();
-    console.log(result);
+
     return result;
   }
 
